@@ -8,7 +8,7 @@ class OrdersController {
         const user_id = request.user.id;
 
         // Inserting Order infos into the database
-        const order_id = await knex("orders").insert({
+        const [ order_id ]  = await knex("orders").insert({
             orderStatus,
             totalPrice,
             paymentMethod,

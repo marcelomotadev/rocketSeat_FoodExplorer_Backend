@@ -1,7 +1,7 @@
 // Knex, App Error and Disk Storage Import
 const knex = require("../database/knex");
 const AppError = require('../utils/AppError');
-const DiskStorage = require("../providers/DiskStorage")
+const DiskStorage = require("../providers/DiskStorage");
 
 class DishesController {
     async create(request, response) {
@@ -16,17 +16,17 @@ class DishesController {
         }
 
         // Requesting image filename
-        const imageFileName = request.file.filename;
+        // const imageFileName = request.file.filename;
 
         // Instantiating diskStorage
         const diskStorage = new DiskStorage()
 
         // Saving image file
-        const filename = await diskStorage.saveFile(imageFileName);
+        // const filename = await diskStorage.saveFile(imageFileName);
 
         // Inserting the infos into the database
-        const dish_id = await knex("dishes").insert({
-            image: filename,
+        const [ dish_id ] = await knex("dishes").insert({
+            // image: filename,
             title,
             description,
             price,
@@ -34,24 +34,29 @@ class DishesController {
         });
 
         // Checking if dish has only one ingredient and inserting the infos into the database
-        const hasOnlyOneIngredient = typeof(ingredients) === "string";
+        // const hasOnlyOneIngredient = typeof(ingredients) === "string";
 
-        let ingredientsInsert
-
-        if (hasOnlyOneIngredient) {
-            ingredientsInsert = {
-                name: ingredients,
+        const ingredientsInsert = ingredients.map(name => {
+            return {
+                name,
                 dish_id
             }
+        });
 
-        } else if (ingredients.length > 1) {
-            ingredientsInsert = ingredients.map(name => {
-                return {
-                    name,
-                    dish_id
-                }
-            });
-        }
+        // if (hasOnlyOneIngredient) {
+        //     ingredientsInsert = {
+        //         name: ingredients,
+        //         dish_id
+        //     }
+
+        // } else if (ingredients.length > 1) {
+        //     ingredientsInsert = ingredients.map(name => {
+        //         return {
+        //             name,
+        //             dish_id
+        //         }
+        //     });
+        // }
 
         await knex("ingredients").insert(ingredientsInsert);
 
