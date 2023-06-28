@@ -33,12 +33,25 @@ class DishesController {
             category,
         });
 
-        const ingredientsInsert = ingredients.map(name => {
-            return {
-                name,
+        const hasOnlyOneIngredient = typeof(ingredients) === "string";
+
+        let ingredientsInsert;
+
+        if (hasOnlyOneIngredient) {
+            ingredientsInsert = {
+                name: ingredients,
                 dish_id
             }
-        });
+
+        } else if (ingredients.length > 1) {
+            ingredientsInsert = ingredients.map(name => {
+                return {
+                    name,
+                    dish_id
+                }
+            });
+        }
+
 
         await knex("ingredients").insert(ingredientsInsert);
 
